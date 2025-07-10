@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JKUATELC Members</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f0f4f8;
+      color: #333;
+    }
+
+    header {
+      background: #004080;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .filters input,
+    .filters select {
+      padding: 8px;
+      font-size: 0.95em;
+    }
+
+    .member-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .member-card {
+      background: linear-gradient(135deg, #ffecd2, #fcb69f);
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      text-align: center;
+      opacity: 0;
+      animation: fadeIn 0.6s ease-in-out forwards;
+    }
+
+    .member-card img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+
+    .member-card h4 {
+      margin: 5px 0;
+    }
+
+    .member-card p {
+      margin: 3px 0;
+      font-size: 0.9em;
+      color: #444;
+    }
+
+    .member-card button {
+      margin-top: 8px;
+      padding: 6px 12px;
+      font-size: 0.85em;
+      border: none;
+      border-radius: 6px;
+      background: #004080;
+      color: white;
+      cursor: pointer;
+    }
+
+    .pagination {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .pagination button {
+      background: #004080;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      margin: 0 5px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .pagination button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>JKUATELC Members Directory</h1>
+  </header>
+
+  <div class="container">
+    <div class="filters">
+      <input type="text" id="searchInput" placeholder="Search by name...">
+      <select id="deptFilter">
+        <option value="">All Departments</option>
+        <option>Computer Science</option>
+        <option>Mechanical Engineering</option>
+        <option>Math & Stats</option>
+        <option>Biochemistry</option>
+        <option>Architecture</option>
+      </select>
+      <select id="yearFilter">
+        <option value="">All Years</option>
+        <option>1st Year</option>
+        <option>2nd Year</option>
+        <option>3rd Year</option>
+        <option>4th Year</option>
+      </select>
+    </div>
+
+    <div class="member-grid" id="memberGrid"></div>
+
+    <div class="pagination">
+      <button id="prevBtn">Previous</button>
+      <button id="nextBtn">Next</button>
+    </div>
+  </div>
+
+  <script>
+    const members = Array.from({ length: 50 }).map((_, i) => ({
+      name: `Member ${i + 1}`,
+      department: ['Computer Science', 'Mechanical Engineering', 'Math & Stats', 'Biochemistry', 'Architecture'][i % 5],
+      year: [`1st Year`, `2nd Year`, `3rd Year`, `4th Year`][i % 4],
+      role: ['General Member', 'Class Rep', 'Mentor'][i % 3],
+      photo: `https://randomuser.me/api/portraits/lego/${i % 10}.jpg`,
+      phone: `07${Math.floor(10000000 + Math.random() * 89999999)}`
+    }));
+
+    let currentPage = 1;
+    const perPage = 8;
+
+    const grid = document.getElementById('memberGrid');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    function displayMembers() {
+      const start = (currentPage - 1) * perPage;
+      const end = start + perPage;
+      const filtered = getFilteredMembers();
+      const paginated = filtered.slice(start, end);
+
+      grid.innerHTML = '';
+      for (let m of paginated) {
+        grid.innerHTML += `
+          <div class="member-card">
+            <img src="${m.photo}" alt="${m.name}" />
+            <h4>${m.name}</h4>
+            <p><strong>${m.department}</strong></p>
+            <p>${m.year}</p>
+            <p>${m.role}</p>
+            <p>📞 ${m.phone}</p>
+            <button onclick="alert('Call ${m.name} at ${m.phone}')">Contact</button>
+          </div>
+        `;
+      }
+
+      prevBtn.disabled = currentPage === 1;
+      nextBtn.disabled = end >= filtered.length;
+    }
+
+    function getFilteredMembers() {
+      const nameVal = document.getElementById('searchInput').value.toLowerCase();
+      const deptVal = document.getElementById('deptFilter').value;
+      const yearVal = document.getElementById('yearFilter').value;
+
+      return members.filter(m =>
+        m.name.toLowerCase().includes(nameVal) &&
+        (deptVal === '' || m.department === deptVal) &&
+        (yearVal === '' || m.year === yearVal)
+      );
+    }
+
+    document.getElementById('searchInput').addEventListener('input', () => {
+      currentPage = 1;
+      displayMembers();
+    });
+    document.getElementById('deptFilter').addEventListener('change', () => {
+      currentPage = 1;
+      displayMembers();
+    });
+    document.getElementById('yearFilter').addEventListener('change', () => {
+      currentPage = 1;
+      displayMembers();
+    });
+    prevBtn.onclick = () => {
+      currentPage--;
+      displayMembers();
+    };
+    nextBtn.onclick = () => {
+      currentPage++;
+      displayMembers();
+    };
+
+    displayMembers();
+  </script>
+</body>
+</html>

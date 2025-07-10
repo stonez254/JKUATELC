@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JKUATELC | Member Registration</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                  url('https://i.imgur.com/9nU2vGu.jpg') no-repeat center center/cover;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: rgba(0, 0, 50, 0.8);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      max-width: 400px;
+      width: 100%;
+      animation: fadeIn 1.2s ease-in-out;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    input, select, button {
+      padding: 12px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 6px;
+      font-size: 1em;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    select {
+      background-color: #f0f0f0;
+      color: #333;
+    }
+
+    input[type="file"] {
+      background-color: #e8e8e8;
+    }
+
+    button {
+      background-color: #004080;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0059b3;
+    }
+
+    #status {
+      text-align: center;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #00ffcc;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>JKUATELC Member Registration</h2>
+    <form id="registerForm" enctype="multipart/form-data">
+      <input type="text" name="fullName" placeholder="Full Name (as per ID)" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <select name="course" required>
+        <option value="">Select Course</option>
+        <option value="Mathematics and Computer Science">Mathematics and Computer Science</option>
+        <option value="Electrical Engineering">Electrical Engineering</option>
+        <option value="Medicine">Medicine</option>
+        <option value="Agricultural Engineering">Agricultural Engineering</option>
+        <option value="BSc. Statistics">BSc. Statistics</option>
+      </select>
+      <select name="year" required>
+        <option value="">Select Academic Year</option>
+        <option value="1st Year">1st Year</option>
+        <option value="2nd Year">2nd Year</option>
+        <option value="3rd Year">3rd Year</option>
+        <option value="4th Year">4th Year</option>
+      </select>
+      <input type="file" name="image" accept="image/*" required>
+      <button type="submit">Register</button>
+    </form>
+    <p id="status"></p>
+  </div>
+
+  <script>
+    const form = document.getElementById('registerForm');
+    const status = document.getElementById('status');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+
+      const res = await fetch('/register', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await res.json();
+      status.textContent = data.message || data.error;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JKUAT Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    body {
+      background-color: #f0f4f8;
+      color: #222;
+      overflow: hidden;
+    }
+    canvas#rain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    header {
+      text-align: center;
+      padding: 20px;
+      background: #004d40;
+      color: white;
+      position: relative;
+      z-index: 1;
+    }
+    header img {
+      height: 80px;
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-size: 24px;
+    }
+    .course-groups, .course-details {
+      padding: 30px;
+      display: none;
+      position: relative;
+      z-index: 1;
+    }
+    .course-groups.active,
+    .course-details.active {
+      display: grid;
+    }
+    .course-groups {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .course-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+    .course-card:hover {
+      transform: scale(1.03);
+      background-color: #e0f7fa;
+    }
+    .course-card h3 {
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+    .course-card span {
+      font-size: 14px;
+      color: #666;
+    }
+    .course-details {
+      grid-template-columns: 1fr;
+      gap: 20px;
+      animation: fadeIn 0.6s ease;
+    }
+    .details-box {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+    }
+    .profile {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .profile img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-right: 15px;
+    }
+    .profile span {
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .student-list .student {
+      display: flex;
+      align-items: center;
+      background: #004d40;
+      color: white;
+      padding: 10px;
+      margin-top: 8px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .student:hover {
+      background: #00695c;
+    }
+    .student img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    .back-btn {
+      background: #c62828;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .back-btn:hover {
+      background: #b71c1c;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="rain"></canvas>
+
+  <header>
+    <img src="https://www.jkuat.ac.ke/wp-content/themes/jkuat/images/logo.png" alt="JKUAT Logo">
+    <h1>JKUAT Courses Dashboard</h1>
+  </header>
+
+  <!-- (Rest of the existing HTML remains the same) -->
+
+  <!-- Rainfall Animation Script -->
+  <script>
+    const canvas = document.getElementById('rain');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+    let raindrops = [];
+
+    function createRain() {
+      for (let i = 0; i < 300; i++) {
+        raindrops.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          length: Math.random() * 20 + 10,
+          speed: Math.random() * 3 + 2
+        });
+      }
+    }
+
+    function drawRain() {
+      ctx.clearRect(0, 0, width, height);
+      ctx.strokeStyle = '#80d8ff';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let drop of raindrops) {
+        ctx.moveTo(drop.x, drop.y);
+        ctx.lineTo(drop.x, drop.y + drop.length);
+      }
+      ctx.stroke();
+      updateRain();
+    }
+
+    function updateRain() {
+      for (let drop of raindrops) {
+        drop.y += drop.speed;
+        if (drop.y > height) {
+          drop.y = -drop.length;
+          drop.x = Math.random() * width;
+        }
+      }
+    }
+
+    function animateRain() {
+      drawRain();
+      requestAnimationFrame(animateRain);
+    }
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    createRain();
+    animateRain();
+  </script>
+
+  <!-- (Your existing dashboard logic and courseData object remain unchanged) -->
+
+</body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JKUAT Dashboard</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    body {
+      background-color: #f0f4f8;
+      color: #222;
+    }
+    header {
+      text-align: center;
+      padding: 20px;
+      background: #004d40;
+      color: white;
+    }
+    header img {
+      height: 80px;
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-size: 24px;
+    }
+
+    .course-groups, .course-details {
+      padding: 30px;
+      display: none;
+    }
+    .course-groups.active,
+    .course-details.active {
+      display: grid;
+    }
+
+    .course-groups {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .course-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+
+    .course-card:hover {
+      transform: scale(1.03);
+      background-color: #e0f7fa;
+    }
+
+    .course-card h3 {
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    .course-card span {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .course-details {
+      grid-template-columns: 1fr;
+      gap: 20px;
+      animation: fadeIn 0.6s ease;
+    }
+
+    .details-box {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .profile img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-right: 15px;
+    }
+
+    .profile span {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .student-list .student {
+      display: flex;
+      align-items: center;
+      background: #004d40;
+      color: white;
+      padding: 10px;
+      margin-top: 8px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .student:hover {
+      background: #00695c;
+    }
+
+    .student img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .back-btn {
+      background: #c62828;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .back-btn:hover {
+      background: #b71c1c;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="https://www.jkuat.ac.ke/wp-content/themes/jkuat/images/logo.png" alt="JKUAT Logo">
+    <h1>JKUAT Courses Dashboard</h1>
+  </header>
+
+  <!-- Course Cards -->
+  <div class="course-groups active" id="dashboard">
+    <div class="course-card" onclick="openCourse('BSc Mathematics and Computer Science')">
+      <h3>BSc Mathematics and Computer Science</h3>
+      <span>School of Computing & Mathematics</span>
+    </div>
+    <div class="course-card" onclick="openCourse('BSc Computer Science')">
+      <h3>BSc Computer Science</h3>
+      <span>School of Computing</span>
+    </div>
+    <div class="course-card" onclick="openCourse('Bachelor of Commerce')">
+      <h3>Bachelor of Commerce</h3>
+      <span>School of Business</span>
+    </div>
+  </div>
+
+  <!-- Course Details View -->
+  <div class="course-details" id="courseDetails">
+    <div class="details-box">
+      <h2 id="courseTitle">Course Name</h2>
+      <p><strong>Academic Year:</strong> <span id="year"></span></p>
+
+      <div class="profile">
+        <img id="teacherImg" src="" alt="Teacher">
+        <span id="teacherName">Teacher Name</span>
+      </div>
+
+      <div class="profile">
+        <img id="repImg" src="" alt="Class Rep">
+        <span id="repName">Rep Name</span>
+      </div>
+    </div>
+
+    <div class="details-box student-list">
+      <h3>Students:</h3>
+      <div id="studentList"></div>
+    </div>
+
+    <button class="back-btn" onclick="goBack()">← Back to Courses</button>
+  </div>
+
+  <script>
+    const courseData = {
+      "BSc Mathematics and Computer Science": {
+        year: "Year 2",
+        teacher: { name: "Dr. Miriam Wanjiku", image: "https://i.pravatar.cc/150?img=12" },
+        rep: { name: "Daniel Otieno", image: "https://i.pravatar.cc/150?img=14" },
+        students: [
+          { name: "Alice Atieno", email: "alicea@jkuat.ac.ke", phone: "+254712000001", image: "https://i.pravatar.cc/150?img=30" },
+          { name: "Kevin Oloo", email: "kooloo@jkuat.ac.ke", phone: "+254710000002", image: "https://i.pravatar.cc/150?img=31" },
+          { name: "Sharon Chebet", email: "sharon.chebet@jkuat.ac.ke", phone: "+254722123456", image: "https://i.pravatar.cc/150?img=32" }
+        ]
+      },
+      "BSc Computer Science": {
+        year: "Year 3",
+        teacher: { name: "Prof. Omondi Baraka", image: "https://i.pravatar.cc/150?img=28" },
+        rep: { name: "Fiona Mutuku", image: "https://i.pravatar.cc/150?img=25" },
+        students: [
+          { name: "Michael Mwangi", email: "mmwangi@jkuat.ac.ke", phone: "+254722111111", image: "https://i.pravatar.cc/150?img=35" },
+          { name: "Faith Nyambura", email: "fnyambura@jkuat.ac.ke", phone: "+254700000003", image: "https://i.pravatar.cc/150?img=36" }
+        ]
+      },
+      "Bachelor of Commerce": {
+        year: "Year 1",
+        teacher: { name: "Dr. Pauline Wekesa", image: "https://i.pravatar.cc/150?img=18" },
+        rep: { name: "George Kamau", image: "https://i.pravatar.cc/150?img=20" },
+        students: [
+          { name: "Rose Wairimu", email: "rwairimu@jkuat.ac.ke", phone: "+254711223344", image: "https://i.pravatar.cc/150?img=40" },
+          { name: "John Mboya", email: "johnmboya@jkuat.ac.ke", phone: "+254733445566", image: "https://i.pravatar.cc/150?img=41" }
+        ]
+      }
+    };
+
+    function openCourse(name) {
+      const data = courseData[name];
+
+      document.getElementById('courseTitle').innerText = name;
+      document.getElementById('year').innerText = data.year;
+
+      document.getElementById('teacherName').innerText = data.teacher.name;
+      document.getElementById('teacherImg').src = data.teacher.image;
+
+      document.getElementById('repName').innerText = data.rep.name;
+      document.getElementById('repImg').src = data.rep.image;
+
+      const list = document.getElementById('studentList');
+      list.innerHTML = "";
+      data.students.forEach(s => {
+        const div = document.createElement("div");
+        div.className = "student";
+        div.onclick = () => showContact(s.name, s.email, s.phone);
+
+        const img = document.createElement("img");
+        img.src = s.image;
+        div.appendChild(img);
+
+        const span = document.createElement("span");
+        span.innerText = s.name;
+        div.appendChild(span);
+
+        list.appendChild(div);
+      });
+
+      document.getElementById('dashboard').classList.remove('active');
+      document.getElementById('courseDetails').classList.add('active');
+    }
+
+    function goBack() {
+      document.getElementById('courseDetails').classList.remove('active');
+      document.getElementById('dashboard').classList.add('active');
+    }
+
+    function showContact(name, email, phone) {
+      alert(`📞 Contact for ${name}\n\nEmail: ${email}\nPhone: ${phone}`);
+    }
+  </script>
+
+</body>
+</html>
+
+</html>
